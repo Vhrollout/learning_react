@@ -1,23 +1,46 @@
-import logo from './logo.svg';
+
 import './App.css';
+import './styles.css';
+import MoviesSearch from './components/moviesSearch';
+import { useState } from "react";
+import FavoritesList from './favoritesList';
+import MovieModal from './movieModal';
 
 function App() {
+
+  const [favorites, setFavorites] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const showModal = (movie) => {
+    setSelectedMovie(movie);
+    setIsModalOpen(true);
+  }
+
+  const closeModal = () => {
+   setSelectedMovie(null);
+    setIsModalOpen(false);
+  }
+
+  const addFavorites = (movie) => {
+    setFavorites([...favorites, movie])
+  }
+
+  console.log(favorites)
+
+  const removeFavourite = (movie) => {
+    setFavorites(favorites.filter(f => f.imdbID !== movie.imdbID)) 
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <MoviesSearch addFavorites={addFavorites} />
+      <FavoritesList favorites={favorites} removeFavourite={removeFavourite} showModal={showModal} />
+      { selectedMovie && (
+        <MovieModal isModalOpen={isModalOpen} showModal={showModal} movie={selectedMovie} closeModal={closeModal} />
+      )}
+
+
     </div>
   );
 }
